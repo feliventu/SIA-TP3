@@ -1,0 +1,14 @@
+
+experiments:
+- experiment_name: digit_lr_0001_cuda
+  architecture: [784, 512, 256, 10]
+  activation: relu  # "relu", "sigmoid", "tanh"
+  output_activation: softmax  # "softmax", "sigmoid"
+  loss: cross_entropy  # "cross_entropy", "mse"
+  optimizer: adam  # "adam", "sgd"
+  learning_rate: 0.001
+  batch_size: 128
+  epochs: 50
+  train_val_split: 0.8
+  seed: 42
+  backend: cuda  # "cpu", "cuda", "tensor"
