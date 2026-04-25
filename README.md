@@ -1,4 +1,5 @@
 # SIA-TP3
+
 Perceptrón Multicapa desde cero con NumPy, con aceleración GPU opcional (CUDA/Tensor Cores).
 
 ## Requisitos
@@ -31,18 +32,18 @@ Todo se configura en `config.yaml`. Ejemplo:
 
 ```yaml
 experiments:
-- experiment_name: mi_experimento
-  architecture: [784, 128, 64, 10]
-  activation: relu               # relu / tanh
-  output_activation: softmax     # softmax / same / none
-  loss: cross_entropy            # cross_entropy / mse
-  optimizer: adam                 # adam / sgd / sgd_momentum
-  learning_rate: 0.001
-  batch_size: 64
-  epochs: 50
-  train_val_split: 0.8
-  seed: 42
-  backend: cpu                   # cpu / cuda / tensor
+  - experiment_name: mi_experimento
+    architecture: [784, 128, 64, 10]
+    activation: relu # relu / tanh
+    output_activation: softmax # softmax / same / none
+    loss: cross_entropy # cross_entropy / mse
+    optimizer: adam # adam / sgd / sgd_momentum
+    learning_rate: 0.001
+    batch_size: 64
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    backend: cpu # cpu / cuda / tensor
 ```
 
 ## Aceleración GPU (opcional)
@@ -95,6 +96,7 @@ make install    # (o: sudo make install)
 ```
 
 Verificar:
+
 ```bash
 python3 -c "import cuda_ops; print('OK')"
 ```

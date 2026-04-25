@@ -1,0 +1,26 @@
+experiments:
+- experiment_name: ex3_relu_256_128
+  architecture: [784, 256, 128, 10]
+  activation: relu
+  output_activation: softmax
+  loss: cross_entropy
+  optimizer: adam
+  learning_rate: 0.001
+  batch_size: 128
+  epochs: 12
+  train_val_split: 0.8
+  seed: 42
+  backend: cpu
+
+- experiment_name: ex3_relu_512_256
+  architecture: [784, 512, 256, 10]
+  activation: relu
+  output_activation: softmax
+  loss: cross_entropy
+  optimizer: adam
+  learning_rate: 0.0007
+  batch_size: 128
+  epochs: 12
+  train_val_split: 0.8
+  seed: 42
+  backend: cpu
