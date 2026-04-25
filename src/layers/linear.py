@@ -54,10 +54,10 @@ class LinearLayer(Layer):
 
     def backward(self, output_gradient: np.ndarray) -> np.ndarray:
         """Calcula dW, db, y dA_prev."""
-        m = self._input.shape[1]
-
-        self.dW = (1.0 / m) * self._matmul(output_gradient, self._input.T)
-        self.db = (1.0 / m) * np.sum(output_gradient, axis=1, keepdims=True)
+        # output_gradient ya viene escalado por batch-size desde la loss.
+        # Evitamos promediar otra vez para no reducir de más la magnitud del gradiente.
+        self.dW = self._matmul(output_gradient, self._input.T)
+        self.db = np.sum(output_gradient, axis=1, keepdims=True)
         input_gradient = self._matmul(self.W.T, output_gradient)
 
         return input_gradient
