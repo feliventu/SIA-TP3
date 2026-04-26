@@ -30,7 +30,8 @@ class NeuralNetwork:
     @classmethod
     def from_config(cls, architecture: List[int], activation: str = "relu",
                     output_activation: str = "same",
-                    backend: str = "cpu") -> "NeuralNetwork":
+                    backend: str = "cpu",
+                    dropout: float = 0.0) -> "NeuralNetwork":
         """
         Construye la red desde una configuración.
 
@@ -39,15 +40,22 @@ class NeuralNetwork:
             activation: activación para capas ocultas ("relu" o "tanh")
             output_activation: "same" = igual que ocultas, "softmax"/"relu"/"tanh", "none" = sin activación
             backend: "cpu" (numpy), "cuda" (CUDA cores), "tensor" (Tensor Cores)
+            dropout: probabilidad de apagar neuronas (0.0 = desactivado)
         """
         act_cls = ACTIVATIONS[activation]
         layers = []
+
+        # Import local to avoid circular imports if any
+        from src.layers.dropout import DropoutLayer
 
         for i in range(len(architecture) - 1):
             layers.append(LinearLayer(architecture[i], architecture[i + 1], backend=backend))
 
             if i < len(architecture) - 2:
                 layers.append(act_cls())
+                # Añadir dropout después de la activación en las capas ocultas
+                if dropout > 0.0:
+                    layers.append(DropoutLayer(dropout))
             else:
                 # Última capa
                 if output_activation == "same":
@@ -57,10 +65,10 @@ class NeuralNetwork:
 
         return cls(layers)
 
-    def forward(self, X: np.ndarray) -> np.ndarray:
+    def forward(self, X: np.ndarray, is_training: bool = False) -> np.ndarray:
         """Propagación hacia adelante: X -> capa1 -> capa2 -> ... -> output"""
         for layer in self.layers:
-            X = layer.forward(X)
+            X = layer.forward(X, is_training=is_training)
         return X
 
     def backward(self, grad: np.ndarray) -> None:
@@ -75,7 +83,7 @@ class NeuralNetwork:
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         """Forward pass sin guardar estado (para inferencia)."""
-        return self.forward(X)
+        return self.forward(X, is_training=False)
 
     def save(self, path: str, epoch: int = 0) -> None:
         """Guarda los pesos de la red en un archivo .npz"""

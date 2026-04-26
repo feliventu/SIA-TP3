@@ -49,6 +49,8 @@ class ExperimentConfig:
     train_val_split: float = 0.8
     seed: int = 42
     backend: str = "cpu"  # "cpu", "cuda", "tensor"
+    augmentation: Optional[Dict[str, Any]] = None  # Optional dict for augmentation config
+    dropout: float = 0.0  # Probabilidad de apagar neuronas (Inverted Dropout)
 
     def build_network(self) -> NeuralNetwork:
         return NeuralNetwork.from_config(
@@ -56,6 +58,7 @@ class ExperimentConfig:
             activation=self.activation,
             output_activation=self.output_activation,
             backend=self.backend,
+            dropout=self.dropout,
         )
 
     def build_loss(self) -> Loss:
@@ -85,6 +88,7 @@ class ExperimentConfig:
             "momentum": self.momentum,
             "seed": self.seed,
             "backend": self.backend,
+            "augmentation": self.augmentation,
         }
 
 

@@ -20,12 +20,22 @@ class Trainer:
     def __init__(self, network: NeuralNetwork, loss_fn: Loss,
                  learning_rate: float = 0.01, batch_size: int = 32,
                  seed: Optional[int] = None,
-                 optimizer: Optional[Optimizer] = None):
+                 optimizer: Optional[Optimizer] = None,
+                 augmentation: Optional[Dict] = None,
+                 backend: str = "cpu"):
         self.network = network
         self.loss_fn = loss_fn
         self.lr = learning_rate
         self.batch_size = batch_size
         self.optimizer = optimizer
+        self.augmentation = augmentation
+        self.backend = backend
+
+        if self.backend in ["cuda", "tensor"]:
+            import cuda_ops
+            self._cuda_ops = cuda_ops
+        else:
+            self._cuda_ops = None
 
         if seed is not None:
             np.random.seed(seed)
@@ -70,9 +80,22 @@ class Trainer:
             for epoch in range(initial_epoch + 1, initial_epoch + epochs + 1):
                 t0 = time.time()
 
+                X_train_epoch = X_train
+                # Data Augmentation (GPU only)
+                if self.augmentation is not None and self.augmentation.get("enabled", False) and self._cuda_ops is not None:
+                    alpha = self.augmentation.get("alpha", 36.0)
+                    sigma = self.augmentation.get("sigma", 5.0)
+                    rot = self.augmentation.get("rotation_range", 15.0)
+                    scale = self.augmentation.get("scale_range", 0.15)
+                    
+                    # cuda_ops.augment_images expects (m, features) C-contiguous
+                    X_contiguous = np.ascontiguousarray(X_train.T)
+                    X_aug = self._cuda_ops.augment_images(X_contiguous, alpha, sigma, rot, scale)
+                    X_train_epoch = X_aug.T
+
                 # --- Shuffle y mini-batches ---
                 indices = np.random.permutation(m)
-                X_shuffled = X_train[:, indices]
+                X_shuffled = X_train_epoch[:, indices]
                 y_shuffled = y_train[:, indices]
 
                 epoch_loss = 0.0
@@ -84,7 +107,7 @@ class Trainer:
                     y_batch = y_shuffled[:, start:end]
 
                     # Forward
-                    y_pred = self.network.forward(X_batch)
+                    y_pred = self.network.forward(X_batch, is_training=True)
 
                     # Loss
                     batch_loss = self.loss_fn.forward(y_pred, y_batch)

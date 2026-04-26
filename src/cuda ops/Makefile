@@ -17,13 +17,13 @@ all: $(TARGET)
 	@echo "Compilado: $(TARGET)"
 	@echo "Verificar: python3 -c \"import cuda_ops; print('OK')\""
 
-$(TARGET): bindings.cpp kernels/matmul.cu kernels/elementwise.cu gpu_tensor.cuh
+$(TARGET): bindings.cpp kernels/matmul.cu kernels/elementwise.cu kernels/augmentation.cu gpu_tensor.cuh
 	$(NVCC) -shared -o $@ \
-		bindings.cpp kernels/matmul.cu kernels/elementwise.cu \
+		bindings.cpp kernels/matmul.cu kernels/elementwise.cu kernels/augmentation.cu \
 		-I$(PYTHON_INCLUDE) \
 		-I$(PYBIND11_INCLUDE) \
 		-I. \
-		-lcublas -lcudart \
+		-lcublas -lcudart -lcurand \
 		$(ARCH) \
 		-Xcompiler -fPIC \
 		--std=c++17 \

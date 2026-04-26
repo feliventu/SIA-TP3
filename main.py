@@ -100,6 +100,8 @@ def run_experiment(config: ExperimentConfig, X_train, y_train, X_val, y_val,
         batch_size=config.batch_size,
         seed=config.seed,
         optimizer=optimizer,
+        augmentation=config.augmentation,
+        backend=config.backend,
     )
     
     # Entrenar
@@ -150,7 +152,6 @@ def main():
     parser.add_argument("--config", default="config.yaml", help="Path al YAML de config")
     parser.add_argument("--data", default="data/digits.csv", help="Dataset de entrenamiento")
     parser.add_argument("--test", default="test_data/digits_test.csv", help="Dataset de test")
-    parser.add_argument("--extra-data", default=None, help="Dataset adicional (ej: more_digits.csv)")
     parser.add_argument("--test-only", action="store_true", help="Solo evaluar modelo guardado, no entrenar")
     args = parser.parse_args()
     
@@ -158,13 +159,6 @@ def main():
     print("Cargando datos de entrenamiento...")
     X, y = load_dataset(args.data)
     print(f"  Datos: {X.shape[1]} muestras, {X.shape[0]} features")
-    
-    if args.extra_data:
-        print(f"Cargando datos adicionales: {args.extra_data}")
-        X_extra, y_extra = load_dataset(args.extra_data)
-        X = np.hstack([X, X_extra])
-        y = np.hstack([y, y_extra])
-        print(f"  Total: {X.shape[1]} muestras")
     
     # Test set
     X_test, y_test = None, None

@@ -72,8 +72,38 @@ py::array_t<float> matmul(py::array_t<float> A, py::array_t<float> B, bool use_t
     return result;
 }
 
-PYBIND11_MODULE(cuda_ops, m) {
-    m.def("matmul", &matmul, "GPU matrix multiply (row-major compatible)",
+extern void gpu_augment(const float *d_src_img, float *d_dst_img, 
+                 int m, float alpha, float sigma, float rot_range, float scale_range);
+
+py::array_t<float> augment_images(py::array_t<float> images, float alpha, float sigma, float rot, float scale) {
+    auto buf = images.request();
+    
+    // Expecting shape (m, 784), C-contiguous
+    int m = buf.shape[0];
+    int features = buf.shape[1];
+    
+    if (features != 784) {
+        throw std::runtime_error("Las imágenes deben tener 784 features (28x28).");
+    }
+
+    GpuTensor d_src(m, features);
+    GpuTensor d_dst(m, features);
+    
+    d_src.upload((float*)buf.ptr);
+    
+    gpu_augment(d_src.data, d_dst.data, m, alpha, sigma, rot, scale);
+    
+    auto result = py::array_t<float>({m, features});
+    d_dst.download((float*)result.request().ptr);
+    
+    return result;
+}
+
+PYBIND11_MODULE(cuda_ops, m_py) {
+    m_py.def("matmul", &matmul, "GPU matrix multiply (row-major compatible)",
           py::arg("A"), py::arg("B"), py::arg("use_tensor_cores") = false);
+    
+    m_py.def("augment_images", &augment_images, "Deforma imágenes en GPU (Afín + Elástica)",
+          py::arg("images"), py::arg("alpha"), py::arg("sigma"), py::arg("rot"), py::arg("scale"));
 }
 

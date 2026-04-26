@@ -47,7 +47,7 @@ class LinearLayer(Layer):
             result = self._cuda_ops.matmul(A, B, use_tensor)
             return result.astype(np.float64)  # volver a float64 para consistencia
 
-    def forward(self, input_data: np.ndarray) -> np.ndarray:
+    def forward(self, input_data: np.ndarray, is_training: bool = False) -> np.ndarray:
         """Z = W · input + b"""
         self._input = input_data
         return self._matmul(self.W, input_data) + self.b

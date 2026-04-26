@@ -6,7 +6,7 @@ from src.layers.base import Layer
 class Activation(Layer):
 
 
-    def forward(self, input_data: np.ndarray) -> np.ndarray:
+    def forward(self, input_data: np.ndarray, is_training: bool = False) -> np.ndarray:
 
         self._input = input_data
         return self._activate(input_data)

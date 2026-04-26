@@ -87,6 +87,7 @@ ext = Extension(
         "bindings.cpp",
         "kernels/matmul.cu",
         "kernels/elementwise.cu",
+        "kernels/augmentation.cu",
     ],
     include_dirs=[
         get_pybind11_include(),
@@ -94,7 +95,7 @@ ext = Extension(
         ".",  # para encontrar gpu_tensor.cuh
     ],
     library_dirs=[lib_dir],
-    libraries=["cublas", "cudart"],
+    libraries=["cublas", "cudart", "curand"],
     language="c++",
 )
 

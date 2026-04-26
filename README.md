@@ -17,7 +17,7 @@ python3 main.py --config config.yaml --data data/digits.csv --test test_data/dig
 ## Correr Ejercicio 3 (≥98% accuracy)
 
 ```bash
-python3 main.py --config config.yaml --data data/digits.csv --test test_data/digits_test.csv --extra-data data/more_digits.csv
+python3 main.py --config config.yaml --data data/more_digits.csv --test test_data/digits_test.csv
 ```
 
 ## Graficar resultados
@@ -44,6 +44,12 @@ experiments:
     train_val_split: 0.8
     seed: 42
     backend: cpu # cpu / cuda / tensor
+    augmentation: # WARNING: ONLY GPU SUPPORTED
+      enabled: false 
+      alpha: 36.0 # Escala de la deformación elástica
+      sigma: 5.0 # Suavizado de la deformación elástica (Gaussian blur)
+      rotation_range: 15.0 # Rango de rotación en grados (ej: -15 a 15)
+      scale_range: 0.15 # Variación de escala (ej: 0.85 a 1.15)
 ```
 
 ## Aceleración GPU (opcional)

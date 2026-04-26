@@ -14,7 +14,7 @@ from .base import Activation
 class Softmax(Activation):
     """Softmax: convierte logits en probabilidades. Solo para capa de salida."""
 
-    def forward(self, input_data: np.ndarray) -> np.ndarray:
+    def forward(self, input_data: np.ndarray, is_training: bool = False) -> np.ndarray:
         """
         Softmax.
         Input: (n_classes, m_samples)
