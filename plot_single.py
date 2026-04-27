@@ -82,7 +82,9 @@ def plot_single(csv_path: str, out_path: str, title: str = None) -> None:
     max_epoch_possible = df["epoch"].max()
     _style_ax(ax1, "Loss por época", "Época", "Loss")
     ax1.set_yscale("log")
+    ax1.tick_params(axis="y", colors=C_SUBTEXT, which="both")  # log scale regenera los ticks → re-aplicar color
     ax1.legend(fontsize=9, facecolor="#0f3460", labelcolor=C_TEXT, framealpha=0.8)
+
 
     # ── Panel 2: Accuracy ─────────────────────────────────────────────────────
     ax2 = fig.add_subplot(gs[1])
