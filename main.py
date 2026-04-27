@@ -114,7 +114,7 @@ def run_experiment(config: ExperimentConfig, X_train, y_train, X_val, y_val,
         initial_epoch=initial_epoch,
     )
     
-    # Evaluación final
+    # Evaluación final en validación
     val_pred = network.forward(X_val)
     val_acc = accuracy(val_pred, y_val)
     cm = confusion_matrix(val_pred, y_val)
@@ -126,18 +126,30 @@ def run_experiment(config: ExperimentConfig, X_train, y_train, X_val, y_val,
     print(f"F1 promedio:  {np.mean(f1):.4f}")
     
     # Test set si existe
+    test_acc = None
+    test_f1  = None
     if X_test is not None and y_test is not None:
         test_pred = network.forward(X_test)
-        test_acc = accuracy(test_pred, y_test)
-        test_cm = confusion_matrix(test_pred, y_test)
-        test_f1 = f1_per_class(test_cm)
+        test_acc  = float(accuracy(test_pred, y_test))
+        test_cm   = confusion_matrix(test_pred, y_test)
+        test_f1   = f1_per_class(test_cm).tolist()
         print(f"Test accuracy: {test_acc:.4f}")
         print(f"Test F1 promedio: {np.mean(test_f1):.4f}")
     
-    # Guardar config junto al CSV
+    # Guardar config + resultados junto al CSV
     config_path = f"results/{config.experiment_name}_config.json"
+    save_data = config.to_dict()
+    save_data["results"] = {
+        "val_acc":      float(val_acc),
+        "val_f1":       f1.tolist(),
+        "val_f1_mean":  float(np.mean(f1)),
+        "test_acc":     test_acc,
+        "test_f1":      test_f1,
+        "test_f1_mean": float(np.mean(test_f1)) if test_f1 is not None else None,
+        "epochs_trained": initial_epoch + len(history),
+    }
     with open(config_path, "w") as f:
-        json.dump(config.to_dict(), f, indent=2)
+        json.dump(save_data, f, indent=2)
     
     # Guardar modelo
     final_epoch = initial_epoch + len(history)
