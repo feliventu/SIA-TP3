@@ -71,6 +71,9 @@ def run_experiment(config: ExperimentConfig, X_train, y_train, X_val, y_val,
                    X_test=None, y_test=None):
     """Ejecuta un experimento y devuelve resultados."""
     
+    if config.seed is not None:
+        np.random.seed(config.seed)
+    
     print(f"\n{'='*60}")
     print(f"Experimento: {config.experiment_name}")
     print(f"  Arquitectura: {config.architecture}")
