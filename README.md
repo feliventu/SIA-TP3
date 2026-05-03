@@ -18,7 +18,7 @@ pip install numpy pandas pyyaml matplotlib
 # Todos los experimentos definidos en config_ej2.yaml
 python main.py --config config_ej2.yaml --test test_data/digits_test.csv
 
-# Un solo experimento (config.yaml)
+# Un solo experimento o los que esten en config.yaml
 python main.py --config config.yaml --test test_data/digits_test.csv
 
 # Equivalente: --data tiene default data/digits.csv, se puede omitir

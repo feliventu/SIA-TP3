@@ -42,6 +42,17 @@ class NeuralNetwork:
             backend: "cpu" (numpy), "cuda" (CUDA cores), "tensor" (Tensor Cores)
             dropout: probabilidad de apagar neuronas (0.0 = desactivado)
         """
+        # GPU path: usar GpuNetwork (forward/backward completos en GPU)
+        if backend in ("cuda", "tensor"):
+            from src.gpu_network import GpuNetwork
+            return GpuNetwork(
+                architecture=architecture,
+                activation=activation,
+                output_activation=output_activation if output_activation != "same" else activation,
+                backend=backend,
+                dropout=dropout,
+            )
+
         act_cls = ACTIVATIONS[activation]
         layers = []
 

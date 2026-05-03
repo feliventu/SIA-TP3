@@ -31,10 +31,12 @@ class Trainer:
         self.augmentation = augmentation
         self.backend = backend
 
-        if self.backend in ["cuda", "tensor"]:
+        # Intentar cargar cuda_ops siempre para permitir Data Augmentation en GPU
+        # independientemente del backend (así podemos usar Dropout en CPU + Augmentation en GPU)
+        try:
             import cuda_ops
             self._cuda_ops = cuda_ops
-        else:
+        except ImportError:
             self._cuda_ops = None
 
         if seed is not None:
