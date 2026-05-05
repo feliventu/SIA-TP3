@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+
+/results
+
+# Binarios compilados CUDA
+*.so
+*.run
+*.deb
+
+*.npz

@@ -1,0 +1,182 @@
+experiments:
+
+  # ============================================================
+  # GRUPO 1: Variantes de Arquitectura
+  # Fijo: Adam lr=0.001, batch=256, 50 epochs, ReLU + Softmax
+  # ============================================================
+
+  # Baseline mínima: poca capacidad — referencia inferior
+  - experiment_name: arch_small
+    architecture: [784, 64, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # Una capa oculta más ancha: más capacidad, sin profundidad extra
+  - experiment_name: arch_medium
+    architecture: [784, 256, 128, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # Arquitectura amplia: suficiente capacidad para 784 features
+  - experiment_name: arch_large
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # Más profunda, menos ancha: ¿profundidad vs ancho?
+  - experiment_name: arch_deep
+    architecture: [784, 256, 128, 64, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # ============================================================
+  # GRUPO 2: Variantes de Learning Rate
+  # Fijo: arch_large [784,512,256,10], Adam, batch=256, 50 epochs
+  # ============================================================
+
+  # LR muy alto: riesgo de divergencia / oscilación
+  - experiment_name: lr_01
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.01
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # LR moderado
+  - experiment_name: lr_001
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # LR bajo: convergencia lenta pero estable
+  - experiment_name: lr_0001
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.0001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # LR muy bajo: muy lento, difícil converger en pocas épocas
+  - experiment_name: lr_00001
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.00001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # ============================================================
+  # GRUPO 3: Variantes de Optimizador
+  # Fijo: arch_large [784,512,256,10], lr=0.001, batch=256, 50 epochs
+  # ============================================================
+
+  # SGD vanilla: referencia más simple
+  - experiment_name: opt_sgd
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: sgd
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # SGD + Momentum: acumula historia del gradiente
+  - experiment_name: opt_sgd_momentum
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: sgd_momentum
+    learning_rate: 0.001
+    momentum: 0.9
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  # Adam: adaptativo, converge más rápido (mismo lr que arriba para comparar)
+  - experiment_name: opt_adam
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 256
+    epochs: 50
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu

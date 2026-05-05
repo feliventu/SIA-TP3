@@ -1,0 +1,35 @@
+experiments:
+
+  # ============================================================
+  # Arquitectura ÓPTIMA (512-256) — CPU vs CUDA vs Tensor
+  # Matrices: W1(512×784) W2(256×512) W3(10×256)
+  # Benchmark de tiempo por época, no de accuracy (20 epochs es suficiente)
+  # ============================================================
+
+  - experiment_name: cpu_opt_small
+    architecture: [784, 512, 256, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 2048
+    epochs: 20
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
+
+  - experiment_name: cpu_opt_large
+    architecture: [784, 2048, 1024, 10]
+    activation: relu
+    output_activation: softmax
+    loss: cross_entropy
+    optimizer: adam
+    learning_rate: 0.001
+    batch_size: 2048
+    epochs: 20
+    train_val_split: 0.8
+    seed: 42
+    dropout: 0.0
+    backend: cpu
